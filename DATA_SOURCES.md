@@ -1,49 +1,72 @@
 # Data Sources & Provenance Register — P2
 
-This document tracks **every** data source used in this paper. No number enters the analysis without an entry here. Update the Status and Date when data is collected (GATE 1).
+This document tracks **every** data source used in this paper. No number enters the analysis without an entry here. Per the project integrity mandate: every figure traces to a real, downloadable source committed here; where redistribution is restricted, the retrieval URL and access date are logged.
 
 ## Status Legend
 - 🔴 Not collected
-- 🟡 Identified, pending download (await user approval per task rules)
+- 🟡 Identified / restricted redistribution (retrieval URL + access date logged)
 - 🟢 Collected and committed / documented
+
+**Treatment event for the empirical design:** SEBI (Infrastructure Investment Trusts) (Third Amendment) Regulations, 2025 — notified/gazetted **2 September 2025** — which reduced the minimum investment in a privately placed InvIT from **₹1 crore to ₹25 lakh** (Regulation 14(2)(c)) and omitted the ₹25 crore proviso. Pre/post event window: **2025-06-03 → 2025-12-03**.
 
 ---
 
-## Module 1 — NSE Market Data (Liquidity & Cost)
+## Module 1 — Market Data (Liquidity & Cost) — PRIMARY SOURCE: Perplexity Finance connector
 
-| # | Variable | Source | Target file | Status | URL logged | Date |
-|---|---|---|---|---|---|---|
-| 1 | IndiGrid daily close / volume FY24-25 | NSE India | data/raw/NSE/indigrid_daily_fy2425.csv | 🔴 | — | — |
-| 2 | Bid-ask spread (intraday/EOD) | NSE India | data/raw/NSE/indigrid_spread.csv | 🔴 | — | — |
-| 3 | Other listed InvITs daily price/volume | NSE India | data/raw/NSE/invits_daily_fy2425.csv | 🔴 | — | — |
-| 4 | Turnover / traded value | NSE India | data/raw/NSE/invits_turnover.csv | 🔴 | — | — |
+Daily OHLCV + volume pulled via the Perplexity Finance connector (point-in-time provider data). NSE/BSE direct redistribution is restricted (NSE data policy), so the Finance connector is the primary retrieval path; raw CSVs are committed.
 
-## Module 2 — Screener.in Financials (Core Watchlist)
+| # | Entity (type) | Ticker | Files | Status | Date |
+|---|---|---|---|---|---|
+| 1 | IndiGrid (InvIT) | INDIGRID-IV.NS | Finance_Connector/INDIGRID_fy2425_daily.csv, INDIGRID_event_2025.csv | 🟢 | 2026-06-06 |
+| 2 | PowerGrid InvIT (InvIT) | PGINVIT.NS | Finance_Connector/PGINVIT_fy2425_daily.csv, PGINVIT_event_2025.csv | 🟢 | 2026-06-06 |
+| 3 | IRB InvIT (InvIT) | IRBINVIT.NS | Finance_Connector/IRBINVIT_fy2425_daily.csv, IRBINVIT_event_2025.csv | 🟢 | 2026-06-06 |
+| 4 | Embassy REIT (REIT, robustness) | EMBASSY.NS | Finance_Connector/EMBASSY_fy2425_daily.csv, EMBASSY_event_2025.csv | 🟢 | 2026-06-06 |
+| 5 | Mindspace REIT (REIT, robustness) | MINDSPACE.BO | Finance_Connector/MINDSPACE_fy2425_daily.csv, MINDSPACE_event_2025.csv | 🟢 | 2026-06-06 |
+| 6 | Brookfield India REIT (REIT, robustness) | BIRET.BO | Finance_Connector/BIRET_fy2425_daily.csv, BIRET_event_2025.csv | 🟢 | 2026-06-06 |
 
-| # | Variable | Source | Target file | Status | URL logged | Date |
-|---|---|---|---|---|---|---|
-| 5 | InvIT #1 financials | Screener.in | data/raw/Screener/ | 🔴 | — | — |
-| 6 | InvIT #2 financials | Screener.in | data/raw/Screener/ | 🔴 | — | — |
-| 7 | InvIT #3 financials | Screener.in | data/raw/Screener/ | 🔴 | — | — |
-| 8 | InvIT #4 financials | Screener.in | data/raw/Screener/ | 🔴 | — | — |
-| 9 | InvIT #5 financials | Screener.in | data/raw/Screener/ | 🔴 | — | — |
+**Coverage gap (documented, not fabricated):** National Highways InvIT (NHIT) and Cube Highways InvIT (CUBEINVIT) are **not in the Finance connector provider coverage** as of 2026-06-06 (ticker lookup returned NOT_FOUND). The analysis proceeds with the 6 entities above (3 InvITs + 3 REIT robustness controls) and notes this gap. No proxy or imputed series substitutes for the missing entities.
 
-*(Exact 5 tickers to be confirmed from the user's Core Watchlist at GATE 1.)*
+Liquidity proxies derived from this data (committed in data/processed/): Amihud (2002) illiquidity, Roll (1984) spread, high-low relative spread, daily rupee turnover, zero-return-day incidence. NSE data policy (redistribution restricted) 🟡: https://www.nseindia.com/static/market-data/nse-data-policy (accessed 2026-06-06).
+
+## Module 2 — Company Financials (free public pages)
+
+| # | Variable | Source | Status | Note |
+|---|---|---|---|---|
+| 7 | InvIT/REIT fundamentals (cross-check) | Screener.in free public company pages | 🟡 | Screener bulk export is premium-only (https://support.screener.in/article/28-export-screen-results, accessed 2026-06-06). Free public pages readable; Finance connector is the primary structured source. |
 
 ## Module 3 — SEBI Regulatory Coding
 
-| # | Variable | Source | Target file | Status | URL logged | Date |
-|---|---|---|---|---|---|---|
-| 10 | InvIT Master Circular provisions (July 2025) | SEBI | data/raw/SEBI/master_circular_2025.pdf | 🔴 | — | — |
-| 11 | 3rd Amendment 2025 provisions | SEBI | data/raw/SEBI/invit_3rd_amendment_2025.pdf | 🔴 | — | — |
-| 12 | Coded provision matrix | Derived | data/processed/sebi_coded_provisions.csv | 🔴 | — | — |
+| # | Variable | Source | File | Status | Date |
+|---|---|---|---|---|---|
+| 8 | InvIT Master Circular (11 Jul 2025), 237 pp | SEBI | data/raw/SEBI/SEBI_Master_Circular_InvIT_2025-07-11.pdf | 🟢 | 2026-06-06 |
+| 9 | InvIT 3rd Amendment 2025 (gazette 2 Sep 2025), 10 pp | SEBI | data/raw/SEBI/SEBI_InvIT_3rd_Amendment_2025-09-03.pdf | 🟢 | 2026-06-06 |
+| 10 | Coded provisions matrix (14 provisions, P01–P14) | Derived from above | data/raw/SEBI/provisions_coded.csv | 🟢 | 2026-06-06 |
 
-## Module 4 — Survey (only if used; no invented responses)
+URLs (🟢 public/free):
+- Master Circular landing: https://www.sebi.gov.in/legal/master-circulars/jul-2025/master-circular-for-infrastructure-investment-trusts-invits-_95233.html
+- 3rd Amendment landing: https://www.sebi.gov.in/legal/regulations/sep-2025/securities-and-exchange-board-of-india-infrastructure-investment-trusts-third-amendment-regulations-2025_96437.html
+- 3rd Amendment gazette PDF: https://www.sebi.gov.in/sebi_data/attachdocs/sep-2025/1757046936652.pdf
 
-| # | Variable | Source | Target file | Status | URL logged | Date |
-|---|---|---|---|---|---|---|
-| 13 | Sample frame (Zoho Survey_Target_List) | Existing asset | data/raw/survey/sample_frame.csv | 🔴 | — | — |
-| 14 | Survey instrument | Existing asset | data/raw/survey/instrument.md | 🔴 | — | — |
+## Module 4 — Survey (instrument only; NO responses collected or fabricated)
+
+| # | Variable | Source | File | Status | Date |
+|---|---|---|---|---|---|
+| 11 | Sample frame & design | Sandeep_S_PhD_Vault/09_Survey_Zoho (private) | data/raw/survey/SAMPLE_FRAME.md | 🟢 (documented) | 2026-06-06 |
+| 12 | Survey responses | Zoho field collection | data/raw/survey/survey_responses.csv | 🔴 **PENDING — not collected** | — |
+
+The instrument (8 constructs, 5-pt Likert, target N≥250) resides in a **private** repository and is summarized in SAMPLE_FRAME.md without redistribution. **No survey responses have been collected, simulated, or fabricated.** Any survey-dependent model (adoption logistic regression) is marked PENDING in notebooks/04_survey_adoption_PENDING.py and aborts if no real data file is present.
+
+---
+
+## Processed outputs (all derived from the raw sources above)
+- data/processed/liquidity_daily_panel.csv — daily proxies, all 6 entities, pre/post flagged
+- data/processed/liquidity_event_summary.csv — per-entity pre/post means/medians
+- data/processed/paired_tests.csv — cross-entity paired t / Wilcoxon (post vs pre)
+- data/processed/welch_daily_tests.csv — pooled daily-level Welch tests
+- data/processed/chi_square_access.csv + entity_liquidity_tiers.csv — access tier x stale-day
+- data/processed/garch_params.csv — GARCH(1,1) params + pre/post conditional volatility
+- data/processed/ml_classification_results.csv — LogReg/RF/XGBoost tier classification
+- data/processed/shap_feature_importance.csv — SHAP attribution (XGBoost)
 
 ---
 *Maintainer: Sandeep S (@SanKabira). Last updated: 2026-06-06.*
