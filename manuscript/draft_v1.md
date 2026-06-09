@@ -73,6 +73,18 @@ Interactive dashboards (Tableau Public, profile `sandeep.s1797`) accompany each 
 ### 5.1 Cross-class liquidity gap - entity-level descriptives (H1)
 Source: `data/processed/liquidity_by_entity.csv` (notebook cell: "Compute Amihud, Roll spread, turnover, and zero-return days"). At the entity-aggregate level, mean Amihud illiquidity is lower (more liquid) for REITs (~1.51e-10) than for InvITs (~3.81e-10), while mean turnover is comparable across classes (REIT ~0.000395 vs InvIT ~0.000407). Because only four entities populate each class, an entity-level non-parametric test is underpowered (Mann-Whitney U = 2.00, z = -1.59, p = 0.112; large effect r = 0.561, not significant); the direction nonetheless favours greater REIT liquidity. Dashboard: https://public.tableau.com/app/profile/sandeep.s1797/viz/P2BInvITIndiaTokenization-LiquiditySEBIAmendment/AmihudIlliquiditybyEntity
 
+![Figure 1. Daily Amihud illiquidity time series by entity, four REITs and four InvITs, NSE panel 2021-2025, showing persistently higher (less liquid) price-impact for InvIT units.](../figures/fig1_amihud_timeseries.png)
+
+**Figure 1.** Daily Amihud illiquidity time series across the eight-entity panel (2021-2025). InvIT units (higher series) exhibit greater price impact than REIT units. Source: `data/processed/liquidity_daily_panel.csv`.
+
+![Figure 2. Pre- versus post-SEBI-amendment mean Amihud illiquidity bar chart comparing REIT and InvIT asset classes.](../figures/fig2_amihud_prepost_bar.png)
+
+**Figure 2.** Mean Amihud illiquidity, pre- versus post-SEBI InvIT (Third Amendment) event date (2023-09-26), by asset class. Source: `data/processed/liquidity_daily_panel.csv`.
+
+![Figure 4. Distribution of Roll implied spreads by asset class, box plot comparing REIT and InvIT high-low spread proxies.](../figures/fig4_hlspread_box.png)
+
+**Figure 4.** Box plot of the Roll implied (high-low) spread distribution by asset class, corroborating the cross-class liquidity ordering. Source: `data/processed/liquidity_daily_panel.csv`.
+
 ### 5.2 Independent daily-level validation of the liquidity gap (H1)
 To overcome the low power of the eight-entity test, the cross-class comparison was re-estimated on the daily panel in DataStatPro (Version 2.2.3). A two-sided Mann-Whitney U test on daily Amihud illiquidity (REIT n = 372; InvIT n = 372) returns:
 
@@ -108,9 +120,21 @@ Source: `data/processed/panel_coefficients.csv` (notebook cell: "Build a REAL vo
 
 Both `post_event` and `adoption_proxy_zscore` are significant at the 5% level for Amihud illiquidity and for the turnover ratio, supporting H3 and H4; effects on zero-return days and absolute returns are not significant.
 
+![Figure 3. Turnover ratio pre- versus post-SEBI-amendment by asset class, bar chart showing higher post-event turnover associated with adoption intensity.](../figures/fig3_turnover_prepost.png)
+
+**Figure 3.** Turnover ratio, pre- versus post-event, by asset class. Higher turnover tracks the volume-based adoption proxy (H4). Source: `data/processed/liquidity_daily_panel.csv`.
+
+![Figure 6. SHAP feature-importance plot ranking the contribution of adoption-proxy components and post-event indicator to predicted Amihud illiquidity.](../figures/fig6_shap_importance.png)
+
+**Figure 6.** SHAP feature-importance ranking for the adoption-proxy model of liquidity. The composite adoption-proxy z-score dominates, consistent with the panel-regression magnitude (beta = -1.665e-10, t = -25.9). Source: `data/processed/panel_coefficients.csv` and the adoption-proxy notebook cell.
+
 ## 6. Discussion
 
 Four findings carry the argument. First, the cross-class liquidity gap is real and, at the daily level, statistically robust (Section 5.2: U = 38{,}447, z = 10.49, p < 0.001, r = 0.385), independently reproduced outside the primary HEX environment. The direction at the entity-aggregate level (Section 5.1) indicates InvITs bear the larger price-impact burden, making them the more natural candidates for any liquidity-enhancing intervention such as tokenization. Second, the SEBI Third Amendment event window yields a small, statistically insignificant abnormal return (CAR = +0.315%, t approximately 0.14), implying the market did not reprice these units on the regulatory news alone. Third, and most important, the adoption proxy is the dominant correlate of liquidity: a one-standard-deviation rise in adoption intensity is associated with a large, highly significant fall in Amihud illiquidity (beta = -1.665e-10, t = -25.9) and a large rise in turnover (beta = 3.309e-04, t = 48.6). The policy reading is that liquidity gains follow participation and trading activity rather than regulatory announcements per se - consistent with the tokenization thesis that broader, fractional participation is the operative channel. Fourth, the non-results are informative: neither the event nor the adoption proxy significantly moves zero-return frequency or absolute returns, suggesting the effect operates through depth and turnover rather than through volatility or trading-halt incidence.
+
+![Figure 5. GARCH(1,1) conditional volatility series for the panel, illustrating volatility persistence estimated via NumPy variance-targeted grid-MLE fallback.](../figures/fig5_garch_condvol.png)
+
+**Figure 5.** GARCH(1,1) conditional volatility for the panel (NumPy variance-targeted grid-MLE fallback). Volatility persistence is moderate and does not co-move with the adoption-proxy liquidity channel, supporting the depth-and-turnover (not volatility) interpretation. Source: `data/processed/liquidity_daily_panel.csv`.
 
 ## 7. Limitations and Future Research
 
@@ -122,7 +146,7 @@ Using a reproducible daily panel of eight Indian InvITs and REITs, and validatin
 
 ## Data and Software Availability
 
-All raw data, processed datasets, notebooks, and figures are openly available in the public repository: https://github.com/SanKabira/P2-BInvIT-India-Tokenization-Empirical. Key processed files: `data/processed/liquidity_by_entity.csv`, `data/processed/liquidity_daily_panel.csv`, `data/processed/event_study_car.csv`, `data/processed/panel_coefficients.csv`. Interactive dashboards: Tableau Public profile `sandeep.s1797`. The independent cross-validation was produced in DataStatPro.
+All raw data, processed datasets, notebooks, and figures are openly available in the public repository: https://github.com/SanKabira/P2-BInvIT-India-Tokenization-Empirical. Key processed files: `data/processed/liquidity_by_entity.csv`, `data/processed/liquidity_daily_panel.csv`, `data/processed/event_study_car.csv`, `data/processed/panel_coefficients.csv`. Figures 1-6 are archived in `figures/` and embedded above. Interactive dashboards: Tableau Public profile `sandeep.s1797`. The independent cross-validation was produced in DataStatPro.
 
 ## References
 
