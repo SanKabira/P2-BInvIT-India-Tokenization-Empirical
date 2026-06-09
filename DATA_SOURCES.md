@@ -26,6 +26,8 @@ Daily OHLCV + volume pulled via the Perplexity Finance connector (point-in-time 
 
 **Coverage gap (documented, not fabricated):** National Highways InvIT (NHIT) and Cube Highways InvIT (CUBEINVIT) are **not in the Finance connector provider coverage** as of 2026-06-06 (ticker lookup returned NOT_FOUND). The analysis proceeds with the 6 entities above (3 InvITs + 3 REIT robustness controls) and notes this gap. No proxy or imputed series substitutes for the missing entities.
 
+**2026-06-09 continuous-panel re-pull (rigour uplift):** to address the statistical-power shortfall flagged in `GAP_AUDIT_P2.md` (P0-1), a **gap-free continuous daily price/volume series spanning January 2024 – December 2025** was pulled from the same Perplexity Finance connector for all six entities (~20 months pre-reform, ~3 months post). This yields the estimation panel `data/processed/liquidity_daily_panel_continuous.csv` (**2,954 entity-days**) on which the difference-in-differences, bootstrap, placebo, event-window-sensitivity, six-proxy, and GARCH-model-selection analyses now run. Tickers: INDIGRID-IV.NS, PGINVIT.NS, IRBINVIT.NS (InvITs); EMBASSY.NS, MINDSPACE-RR.NS, BIRET.BO (REIT controls). Retrieval method: Perplexity Finance connector continuous-CSV pull, access date **2026-06-09**. No observation was fabricated, imputed, or simulated; the new numbers trace to the committed continuous CSVs.
+
 Liquidity proxies derived from this data (committed in data/processed/): Amihud (2002) illiquidity, Roll (1984) spread, high-low relative spread, daily rupee turnover, zero-return-day incidence. NSE data policy (redistribution restricted) 🟡: https://www.nseindia.com/static/market-data/nse-data-policy (accessed 2026-06-06).
 
 ## Module 2 — Company Financials (free public pages)
@@ -59,14 +61,25 @@ The instrument (8 constructs, 5-pt Likert, target N≥250) resides in a **privat
 ---
 
 ## Processed outputs (all derived from the raw sources above)
+
+### Original (event-file) outputs
 - data/processed/liquidity_daily_panel.csv — daily proxies, all 6 entities, pre/post flagged
 - data/processed/liquidity_event_summary.csv — per-entity pre/post means/medians
 - data/processed/paired_tests.csv — cross-entity paired t / Wilcoxon (post vs pre)
 - data/processed/welch_daily_tests.csv — pooled daily-level Welch tests
 - data/processed/chi_square_access.csv + entity_liquidity_tiers.csv — access tier x stale-day
-- data/processed/garch_params.csv — GARCH(1,1) params + pre/post conditional volatility
+- data/processed/garch_params.csv — GARCH params + pre/post conditional volatility
 - data/processed/ml_classification_results.csv — LogReg/RF/XGBoost tier classification
 - data/processed/shap_feature_importance.csv — SHAP attribution (XGBoost)
 
+### Rigour-uplift outputs (2026-06-09, continuous panel; produced by notebooks/05_did_robustness.py)
+- data/processed/liquidity_daily_panel_continuous.csv — continuous Jan-2024–Dec-2025 panel (2,954 entity-days)
+- data/processed/liquidity_proxy_matrix.csv — six-proxy pre/post matrix with t-tests
+- data/processed/did_results.csv — two-way FE DiD (InvIT×Post), entity-clustered SEs, four outcomes
+- data/processed/bootstrap_cis.csv — entity-block bootstrap CIs (2,000 reps)
+- data/processed/placebo_tests.csv — four pre-reform pseudo-event DiD coefficients
+- data/processed/event_window_sensitivity.csv — DiD over ±20/40/60/90/120-day windows
+- data/processed/garch_model_selection.csv — GARCH/EGARCH/GJR AIC per trust + selected model
+
 ---
-*Maintainer: Sandeep S (@SanKabira). Last updated: 2026-06-06.*
+*Maintainer: Sandeep S (@SanKabira). Last updated: 2026-06-09 (Scopus/Q1 rigour uplift).*
